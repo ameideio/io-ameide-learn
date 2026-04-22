@@ -1,0 +1,7 @@
+.claude
+.docusaurus
+.git
+.github
+build
+node_modules
+npm-debug.log*

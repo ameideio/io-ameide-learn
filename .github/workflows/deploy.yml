@@ -1,0 +1,110 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Upload Pages artifact
+        id: artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: build
+          include-hidden-files: true
+
+      - name: Deploy via Pages API
+        id: deployment
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.artifact.outputs.artifact_id }}
+        run: |
+          set -euo pipefail
+
+          oidc_token="$(
+            curl -fsSL \
+              -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+              "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=https://github.com/${GITHUB_REPOSITORY_OWNER}" \
+            | python3 -c 'import json,sys; print(json.load(sys.stdin)["value"])'
+          )"
+
+          OIDC_TOKEN="${oidc_token}" python3 - <<'PY' > payload.json
+          import json
+          import os
+
+          payload = {
+              "artifact_id": int(os.environ["ARTIFACT_ID"]),
+              "environment": "github-pages",
+              "pages_build_version": os.environ["GITHUB_SHA"],
+              "oidc_token": os.environ["OIDC_TOKEN"],
+          }
+          print(json.dumps(payload))
+          PY
+
+          deployment_response="$(
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${GITHUB_REPOSITORY}/pages/deployments" \
+              --input payload.json
+          )"
+
+          deployment_id="$(python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])' <<<"${deployment_response}")"
+          page_url="$(python3 -c 'import json,sys; print(json.load(sys.stdin)["page_url"])' <<<"${deployment_response}")"
+
+          if [[ "${page_url}" != http* ]]; then
+            page_url="https://${page_url}"
+          fi
+
+          echo "page_url=${page_url}" >> "${GITHUB_OUTPUT}"
+
+          for attempt in $(seq 1 60); do
+            status="$(gh api "repos/${GITHUB_REPOSITORY}/pages/deployments/${deployment_id}" --jq .status)"
+            case "${status}" in
+              succeed)
+                exit 0
+                ;;
+              failed|canceled)
+                echo "Pages deployment ${deployment_id} ended with status ${status}" >&2
+                exit 1
+                ;;
+            esac
+            sleep 5
+          done
+
+          echo "Timed out waiting for Pages deployment ${deployment_id}" >&2
+          exit 1

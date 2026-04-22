@@ -1,0 +1,206 @@
+@use "@carbon/styles/scss/theme" as theme;
+@use "@carbon/styles/scss/spacing" as *;
+
+.hero {
+  background: #{theme.$background};
+  color: #{theme.$text-primary};
+  padding-block: $spacing-11 $spacing-09;
+  border-block-end: 1px solid #{theme.$border-subtle};
+}
+
+.heroInner {
+  max-inline-size: 99rem;
+  margin-inline: auto;
+  padding-inline: $spacing-07;
+}
+
+.heroTitle {
+  font-weight: 300;
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  line-height: 1.15;
+  letter-spacing: 0;
+  margin: 0 0 $spacing-05;
+  color: #{theme.$text-primary};
+}
+
+.heroSubtitle {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: #{theme.$text-secondary};
+  max-inline-size: 42rem;
+  margin: 0 0 $spacing-07;
+}
+
+.heroActions {
+  display: flex;
+  gap: $spacing-03;
+  flex-wrap: wrap;
+}
+
+.section {
+  padding-block: $spacing-10 $spacing-11;
+  background: #{theme.$background};
+}
+
+.sectionAlt {
+  background: #{theme.$layer-01};
+  border-block-start: 1px solid #{theme.$border-subtle};
+  border-block-end: 1px solid #{theme.$border-subtle};
+}
+
+.sectionInner {
+  max-inline-size: 99rem;
+  margin-inline: auto;
+  padding-inline: $spacing-07;
+}
+
+.sectionIntro {
+  margin-block-end: $spacing-09;
+  max-inline-size: 44rem;
+}
+
+.sectionHeading {
+  font-weight: 300;
+  font-size: clamp(1.75rem, 3vw, 2.625rem);
+  line-height: 1.2;
+  margin: 0 0 $spacing-05;
+  color: #{theme.$text-primary};
+}
+
+.sectionBody {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #{theme.$text-secondary};
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  gap: $spacing-05;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (min-width: 42rem) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.familyGrid {
+  display: grid;
+  gap: $spacing-05;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-05;
+  padding: $spacing-07;
+  background: #{theme.$background};
+  color: #{theme.$text-primary};
+  min-block-size: 14rem;
+  border: 1px solid #{theme.$border-subtle};
+  text-decoration: none;
+
+  &:hover {
+    border-color: #{theme.$border-strong};
+    background: #{theme.$layer-01};
+    text-decoration: none;
+  }
+}
+
+.cardIcon {
+  inline-size: 2rem;
+  block-size: 2rem;
+  background-color: #{theme.$link-primary};
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+// Carbon Document (24x24 simplified paths).
+.icon_document {
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4l5.6 5.6H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M25.7 9.3l-7-7A1 1 0 0 0 18 2H8a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a1 1 0 0 0-.3-.7zM18 4.4l5.6 5.6H18zM24 28H8V4h8v7a1 1 0 0 0 1 1h7z'/%3E%3C/svg%3E");
+}
+
+// Carbon Api.
+.icon_api {
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 30 6 24.5v-11l1 .55v9.86l9 4.95 9-4.95V14.05l1-.55v11zM26 12v-1.44L16 5.14 6 10.56V12H5v-2l11-6 11 6v2zm-9 16v-1h-2v1zm3-2v-1h-2v1zm-6 0v-1h-2v1zm-3-2v-1H9v1zm12 0v-1h-2v1zm-6 0v-1h-2v1zm0-4v-1h-2v1zm3 0v-1h-2v1zm3-2v-1h-2v1zm-9 0v-1H9v1zm6 0v-1h-2v1zm-3-2v-1h-2v1z'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 30 6 24.5v-11l1 .55v9.86l9 4.95 9-4.95V14.05l1-.55v11zM26 12v-1.44L16 5.14 6 10.56V12H5v-2l11-6 11 6v2zm-9 16v-1h-2v1zm3-2v-1h-2v1zm-6 0v-1h-2v1zm-3-2v-1H9v1zm12 0v-1h-2v1zm-6 0v-1h-2v1zm0-4v-1h-2v1zm3 0v-1h-2v1zm3-2v-1h-2v1zm-9 0v-1H9v1zm6 0v-1h-2v1zm-3-2v-1h-2v1z'/%3E%3C/svg%3E");
+}
+
+// Carbon Code (< / >).
+.icon_code {
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M31 16 24 23l-1.4-1.4L28.2 16l-5.6-5.6L24 9zM1 16 8 9l1.4 1.4L3.8 16l5.6 5.6L8 23zm11.42 9.54L17.53 6.8l1.93.53-5.11 18.74z'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M31 16 24 23l-1.4-1.4L28.2 16l-5.6-5.6L24 9zM1 16 8 9l1.4 1.4L3.8 16l5.6 5.6L8 23zm11.42 9.54L17.53 6.8l1.93.53-5.11 18.74z'/%3E%3C/svg%3E");
+}
+
+.sectionAlt .card {
+  background: #{theme.$background};
+
+  &:hover {
+    background: #{theme.$layer-accent};
+  }
+}
+
+.cardHeading {
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.25;
+  margin: 0;
+  color: #{theme.$text-primary};
+}
+
+.cardBody {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #{theme.$text-secondary};
+  margin: 0;
+  flex: 1;
+}
+
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-03;
+  color: #{theme.$link-primary};
+  font-size: 0.875rem;
+  margin-block-start: auto;
+
+  &::after {
+    content: "→";
+    font-size: 1rem;
+    line-height: 1;
+  }
+}
+
+.familyCard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-03;
+  padding: $spacing-05 $spacing-06;
+  background: #{theme.$background};
+  border: 1px solid #{theme.$border-subtle};
+  min-block-size: 6.5rem;
+}
+
+.familyName {
+  font-weight: 500;
+  font-size: 1rem;
+  color: #{theme.$text-primary};
+  margin: 0;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.familyDescription {
+  font-size: 0.8125rem;
+  color: #{theme.$text-secondary};
+  line-height: 1.4;
+  margin: 0;
+}

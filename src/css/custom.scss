@@ -1,0 +1,627 @@
+@use "@carbon/styles/scss/theme" as theme;
+@use "@carbon/styles/scss/themes" as themes;
+@use "@carbon/styles/scss/type";
+@use "@carbon/styles/scss/spacing" as *;
+
+// Self-hosted IBM Plex — matches io-ameide-www's Next Font setup and kills
+// the font flash from CDN loading.
+@import "@fontsource/ibm-plex-sans/300.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-sans/700.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+// Apply the g10 theme (matches io-ameide-www) at :root so the mixin emits
+// every Carbon theme token as a custom property we can reference below.
+:root {
+  @include theme.theme(themes.$g10);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  @include theme.theme(themes.$g100);
+  color-scheme: dark;
+}
+
+// Map Infima's primary + surfaces onto Carbon's g10 palette. Carbon's
+// link-primary (#0f62fe) is the canonical interactive blue; the Infima
+// "primary" ramp mirrors it so buttons, links, and nav share one hue.
+:root {
+  --ifm-color-primary: #0f62fe;
+  --ifm-color-primary-dark: #0353e9;
+  --ifm-color-primary-darker: #044fdb;
+  --ifm-color-primary-darkest: #0043ce;
+  --ifm-color-primary-light: #2c79fe;
+  --ifm-color-primary-lighter: #4589ff;
+  --ifm-color-primary-lightest: #78a9ff;
+
+  --ifm-background-color: #{theme.$background};
+  --ifm-background-surface-color: #{theme.$layer-01};
+  --ifm-color-content: #{theme.$text-primary};
+  --ifm-color-content-secondary: #{theme.$text-secondary};
+  --ifm-color-emphasis-100: #{theme.$layer-01};
+  --ifm-color-emphasis-200: #{theme.$layer-02};
+  --ifm-color-emphasis-300: #{theme.$border-subtle};
+  --ifm-color-emphasis-600: #{theme.$text-secondary};
+  --ifm-color-emphasis-700: #{theme.$text-primary};
+  --ifm-color-emphasis-800: #{theme.$text-primary};
+  --ifm-color-emphasis-900: #{theme.$text-primary};
+
+  --ifm-font-family-base:
+    "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Helvetica, Arial,
+    sans-serif;
+  --ifm-font-family-monospace:
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+  --ifm-heading-font-family: var(--ifm-font-family-base);
+  --ifm-heading-font-weight: 400;
+  --ifm-font-weight-bold: 600;
+
+  --ifm-global-radius: 0;
+  --ifm-card-border-radius: 0;
+  --ifm-button-border-radius: 0;
+  --ifm-alert-border-radius: 0;
+  --ifm-code-border-radius: 0;
+
+  // Carbon UI Shell: always-dark header (#161616) over g10 body, per
+  // @carbon/react Header defaults. Text flips to text-inverse.
+  --ifm-navbar-background-color: #161616;
+  --ifm-navbar-shadow: inset 0 -1px 0 #393939;
+  --ifm-navbar-link-color: #f4f4f4;
+  --ifm-navbar-link-hover-color: #ffffff;
+  --ifm-navbar-height: 3rem;
+
+  // Footer mirrors the header so the Carbon dark bookends match.
+  --ifm-footer-background-color: #161616;
+  --ifm-footer-color: #f4f4f4;
+  --ifm-footer-link-color: #f4f4f4;
+  --ifm-footer-title-color: #ffffff;
+
+  --ifm-link-color: #{theme.$link-primary};
+  --ifm-link-hover-color: #{theme.$link-primary-hover};
+
+  --ifm-code-font-size: 90%;
+  --ifm-code-background: #{theme.$layer-01};
+  --docusaurus-highlighted-code-line-bg: #{theme.$layer-02};
+
+  // Scalar API reference overrides — paired with theme: 'none' in config.
+  --scalar-font: var(--ifm-font-family-base);
+  --scalar-font-code: var(--ifm-font-family-monospace);
+  --scalar-color-1: #{theme.$text-primary};
+  --scalar-color-2: #{theme.$text-secondary};
+  --scalar-color-3: #{theme.$text-placeholder};
+  --scalar-color-accent: #{theme.$link-primary};
+  --scalar-background-1: #{theme.$background};
+  --scalar-background-2: #{theme.$layer-01};
+  --scalar-background-3: #{theme.$layer-02};
+  --scalar-background-accent: #{theme.$background-brand};
+  --scalar-border-color: #{theme.$border-subtle};
+  --scalar-radius: 0;
+  --scalar-radius-lg: 0;
+  --scalar-radius-xl: 0;
+  --scalar-sidebar-background-1: #{theme.$layer-01};
+  --scalar-sidebar-color-1: #{theme.$text-primary};
+  --scalar-sidebar-color-2: #{theme.$text-secondary};
+  --scalar-sidebar-color-active: #{theme.$link-primary};
+  --scalar-sidebar-background-active: #{theme.$layer-selected};
+  --scalar-sidebar-border-color: #{theme.$border-subtle};
+}
+
+// Scalar re-declares --scalar-* on its own .light-mode / .dark-mode
+// selectors, which beat a plain :root override. Duplicate into those
+// scopes so the API reference follows Docusaurus's theme switcher.
+.light-mode {
+  --scalar-color-1: #{theme.$text-primary};
+  --scalar-color-2: #{theme.$text-secondary};
+  --scalar-color-3: #{theme.$text-placeholder};
+  --scalar-color-accent: #{theme.$link-primary};
+  --scalar-background-1: #{theme.$background};
+  --scalar-background-2: #{theme.$layer-01};
+  --scalar-background-3: #{theme.$layer-02};
+  --scalar-background-accent: #{theme.$background-brand};
+  --scalar-border-color: #{theme.$border-subtle};
+  --scalar-sidebar-background-1: #{theme.$layer-01};
+  --scalar-sidebar-color-1: #{theme.$text-primary};
+  --scalar-sidebar-color-2: #{theme.$text-secondary};
+  --scalar-sidebar-color-active: #{theme.$link-primary};
+  --scalar-sidebar-background-active: #{theme.$layer-selected};
+  --scalar-sidebar-border-color: #{theme.$border-subtle};
+}
+
+:root[data-theme="dark"] {
+  --ifm-color-primary: #78a9ff;
+  --ifm-color-primary-dark: #4589ff;
+  --ifm-color-primary-darker: #2c79fe;
+  --ifm-color-primary-darkest: #0f62fe;
+  --ifm-color-primary-light: #a6c8ff;
+  --ifm-color-primary-lighter: #d0e2ff;
+  --ifm-color-primary-lightest: #edf5ff;
+
+  --docusaurus-highlighted-code-line-bg: rgba(244, 244, 244, 0.08);
+}
+
+// Remove Scalar's "Ask AI" affordances. No config flag disables these,
+// so we hide them at the DOM level.
+//   1. Sidebar "Ask AI" button sits in the first row of the Scalar sidebar
+//      alongside the search input — it's the only <button> in that row.
+//   2. The lazy-mounted agent chat overlay + its backdrop.
+aside.t-doc__sidebar > div:first-child > button[class*="bg-sidebar-b-search"] {
+  display: none;
+}
+.agent-scalar-overlay,
+.agent-scalar,
+[class*="agent-scalar"] {
+  display: none !important;
+}
+
+// Scalar picks its own .light-mode/.dark-mode class and doesn't follow
+// Docusaurus's data-theme attribute. When Docusaurus flips to dark, force
+// Scalar's light scope to use the g100 palette so both sides stay in sync.
+:root[data-theme="dark"] .light-mode,
+.dark-mode {
+  --scalar-color-1: var(--cds-text-primary);
+  --scalar-color-2: var(--cds-text-secondary);
+  --scalar-color-3: var(--cds-text-placeholder);
+  --scalar-color-accent: var(--cds-link-primary);
+  --scalar-background-1: var(--cds-background);
+  --scalar-background-2: var(--cds-layer-01);
+  --scalar-background-3: var(--cds-layer-02);
+  --scalar-background-accent: var(--cds-background-brand);
+  --scalar-border-color: var(--cds-border-subtle);
+  --scalar-sidebar-background-1: var(--cds-layer-01);
+  --scalar-sidebar-color-1: var(--cds-text-primary);
+  --scalar-sidebar-color-2: var(--cds-text-secondary);
+  --scalar-sidebar-color-active: var(--cds-link-primary);
+  --scalar-sidebar-background-active: var(--cds-layer-selected);
+  --scalar-sidebar-border-color: var(--cds-border-subtle);
+}
+
+html,
+body {
+  font-family: var(--ifm-font-family-base);
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+// Replace Infima's generic ↗ external-link glyph with Carbon's "Launch"
+// icon wherever it appears (navbar, footer, body links). The SVG's path
+// is hidden and the element is repainted via a currentColor mask so the
+// icon automatically follows link colour (including hover states).
+svg[class*="iconExternalLink"] {
+  inline-size: 14px;
+  block-size: 14px;
+  background-color: currentColor;
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M26 28H6a2.0023 2.0023 0 0 1-2-2V6a2.0023 2.0023 0 0 1 2-2h10v2H6v20h20V16h2v10a2.0023 2.0023 0 0 1-2 2z'/%3E%3Cpath d='M20 2v2h6.586L18 12.586 19.414 14 28 5.414V12h2V2z'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M26 28H6a2.0023 2.0023 0 0 1-2-2V6a2.0023 2.0023 0 0 1 2-2h10v2H6v20h20V16h2v10a2.0023 2.0023 0 0 1-2 2z'/%3E%3Cpath d='M20 2v2h6.586L18 12.586 19.414 14 28 5.414V12h2V2z'/%3E%3C/svg%3E");
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  vertical-align: -2px;
+  margin-inline-start: 0.25rem;
+
+  path {
+    fill: transparent;
+  }
+}
+
+// Infima's .footer--dark preset has higher specificity than :root vars —
+// override it directly so the dark-footer variant actually uses Carbon.
+.footer--dark {
+  background: #161616;
+  --ifm-footer-link-color: #f4f4f4;
+  --ifm-footer-title-color: #ffffff;
+  color: #f4f4f4;
+}
+.footer__link-item {
+  color: #f4f4f4;
+
+  &:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+}
+.footer__title {
+  color: #ffffff;
+  font-weight: 600;
+}
+.footer__copyright {
+  color: #c6c6c6;
+}
+
+// Carbon UI Shell: a dark, flat, 3rem-tall header. Items are full-height
+// with a 2px border-bottom accent on hover (done below in .navbar__item).
+.navbar {
+  border-block-end: 1px solid #393939;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 0;
+  min-height: var(--ifm-navbar-height);
+  background: var(--ifm-navbar-background-color);
+
+  // Brand anchors to the far-left like Carbon's HeaderName.
+  .navbar__brand {
+    padding-inline: 1rem;
+    margin-inline-end: 0;
+    height: var(--ifm-navbar-height);
+    color: var(--ifm-navbar-link-color);
+
+    &:hover {
+      background: #353535; // Carbon background-inverse-hover
+      color: #ffffff;
+    }
+  }
+
+  .navbar__logo {
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-inline-end: 0.75rem;
+    display: flex;
+    align-items: center;
+
+    img {
+      height: 1.5rem;
+      width: 1.5rem;
+      object-fit: contain;
+    }
+  }
+
+  .navbar__title {
+    font-weight: 600;
+    letter-spacing: 0;
+    color: inherit;
+  }
+
+  // Main nav items: full-height, no padding-block, hover underline.
+  .navbar__items .navbar__link {
+    padding: 0 1rem;
+    line-height: var(--ifm-navbar-height);
+    color: var(--ifm-navbar-link-color);
+    font-weight: 400;
+    border-block-end: 2px solid transparent;
+
+    &:hover {
+      background: #353535;
+      color: #ffffff;
+      border-block-end-color: #ffffff;
+    }
+  }
+  .navbar__link--active {
+    color: #ffffff;
+    border-block-end-color: #ffffff;
+  }
+
+  // Right-side links behave like Carbon HeaderGlobalAction icon buttons:
+  // same hover treatment as nav items.
+  .navbar__items--right .navbar__link {
+    padding: 0 1rem;
+    line-height: var(--ifm-navbar-height);
+    color: var(--ifm-navbar-link-color);
+
+    &:hover {
+      background: #353535;
+      color: #ffffff;
+    }
+  }
+
+  // Toggle button (mobile menu + color-mode) behaves like an icon button:
+  // 3rem square, no radius, Carbon inverse hover. Don't force display —
+  // Docusaurus uses media queries to hide the mobile toggle at desktop.
+  .navbar__toggle,
+  .clean-btn[class*="toggleButton_"],
+  [class*="colorModeToggle"] {
+    color: var(--ifm-navbar-link-color);
+    border-radius: 0;
+    height: var(--ifm-navbar-height);
+    width: var(--ifm-navbar-height);
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: #353535;
+      color: #ffffff;
+    }
+  }
+
+  // Search input: swap to Carbon inverse input colors.
+  .navbar__search-input {
+    background: #262626;
+    border: 1px solid transparent;
+    color: #f4f4f4;
+    border-radius: 0;
+
+    &::placeholder {
+      color: #c6c6c6;
+    }
+    &:focus {
+      background: #353535;
+      border-color: #ffffff;
+      outline: 2px solid #ffffff;
+      outline-offset: -2px;
+    }
+  }
+}
+
+// Remove the override I added earlier for .navbar__item.navbar__link — the
+// more specific rules above now handle it.
+.navbar-sidebar {
+  background: #{theme.$background};
+}
+
+// Carbon buttons: squared, no shadows, no uppercase.
+.button {
+  border-radius: 0;
+  font-weight: 400;
+  letter-spacing: 0;
+  box-shadow: none;
+  text-transform: none;
+}
+// Button component tokens aren't in Carbon's theme map — hard-code the
+// canonical g10 button palette so primary/secondary match @carbon/react.
+$button-primary: #0f62fe;
+$button-primary-hover: #0353e9;
+$button-primary-active: #002d9c;
+$button-secondary: #393939;
+$button-secondary-hover: #474747;
+$button-tertiary: #0f62fe;
+
+.button--primary {
+  background: $button-primary;
+  border-color: $button-primary;
+  color: #{theme.$text-on-color};
+
+  &:hover {
+    background: $button-primary-hover;
+    border-color: $button-primary-hover;
+    color: #{theme.$text-on-color};
+  }
+  &:active {
+    background: $button-primary-active;
+    border-color: $button-primary-active;
+  }
+}
+
+.button--secondary {
+  background: $button-secondary;
+  border-color: $button-secondary;
+  color: #{theme.$text-on-color};
+
+  &:hover {
+    background: $button-secondary-hover;
+    border-color: $button-secondary-hover;
+    color: #{theme.$text-on-color};
+  }
+}
+
+// Carbon tertiary / ghost button — blue outline, no fill. Used on the
+// hero's second action to match io-ameide-www's muted CTA pattern.
+.button--outline.button--primary,
+.button--link {
+  background: transparent;
+  border: 1px solid $button-tertiary;
+  color: $button-tertiary;
+  box-shadow: none;
+
+  &:hover {
+    background: $button-tertiary;
+    border-color: $button-tertiary;
+    color: #{theme.$text-on-color};
+  }
+}
+
+// Cards: Carbon layer surface, hairline border, no rounded corners.
+.card {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #{theme.$border-subtle};
+  background: #{theme.$layer-01};
+}
+
+// Hero: replace Infima's gradient with a Carbon g10 "layer" look.
+.hero--primary {
+  background: #{theme.$background};
+  color: #{theme.$text-primary};
+  border-block-end: 1px solid #{theme.$border-subtle};
+
+  .hero__subtitle {
+    color: #{theme.$text-secondary};
+  }
+
+  .button--primary {
+    background: #{theme.$background-brand};
+    border-color: #{theme.$background-brand};
+    color: #{theme.$text-on-color};
+  }
+  .button--secondary {
+    background: transparent;
+    border-color: #{theme.$border-strong};
+    color: #{theme.$text-primary};
+  }
+}
+
+code {
+  background: #{theme.$layer-01};
+  border: 1px solid #{theme.$border-subtle};
+  padding: 0 $spacing-02;
+}
+
+// Pre/code blocks: Carbon uses layer surfaces with a hairline border, no
+// rounded corners, IBM Plex Mono.
+pre,
+.theme-code-block,
+div[class*="codeBlockContainer"] {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: 1px solid #{theme.$border-subtle};
+  background: #{theme.$layer-01};
+}
+
+.prism-code,
+code[class*="language-"],
+pre[class*="language-"] {
+  font-family: var(--ifm-font-family-monospace);
+  background: transparent;
+}
+
+// Left sidebar (Docs): Carbon side-nav rhythm — no pills, selected state is
+// a layer-accent bar, hover uses layer-hover.
+.theme-doc-sidebar-container {
+  border-inline-end: 1px solid #{theme.$border-subtle};
+  background: #{theme.$background};
+}
+.menu {
+  padding: $spacing-03;
+  font-size: 0.875rem;
+}
+.menu__list-item-collapsible,
+.menu__link {
+  border-radius: 0;
+}
+.menu__link {
+  color: #{theme.$text-secondary};
+  font-weight: 400;
+  padding-inline: $spacing-05;
+
+  &:hover {
+    background: #{theme.$layer-01};
+    color: #{theme.$text-primary};
+  }
+}
+.menu__link--active,
+.menu__link--active:hover {
+  background: #{theme.$layer-selected};
+  color: #{theme.$text-primary};
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 #{theme.$border-interactive};
+}
+.menu__list-item-collapsible:hover {
+  background: #{theme.$layer-01};
+}
+
+// Table of contents (right rail) — Carbon quiet rhythm, accent-bar for
+// the current section.
+.table-of-contents {
+  border-inline-start: 1px solid #{theme.$border-subtle};
+  font-size: 0.75rem;
+}
+.table-of-contents__link {
+  color: #{theme.$text-secondary};
+
+  &:hover {
+    color: #{theme.$text-primary};
+  }
+}
+.table-of-contents__link--active {
+  color: #{theme.$text-primary};
+  font-weight: 600;
+}
+
+// Breadcrumbs
+.breadcrumbs__link {
+  color: #{theme.$text-secondary};
+  border-radius: 0;
+
+  &:hover {
+    background: #{theme.$layer-01};
+    color: #{theme.$text-primary};
+  }
+}
+.breadcrumbs__item--active .breadcrumbs__link {
+  background: #{theme.$layer-selected};
+  color: #{theme.$text-primary};
+}
+
+// Admonitions — map Infima alert variants to Carbon inline-notification
+// backgrounds/borders. Carbon uses a 3px left accent bar for status.
+.admonition,
+.alert {
+  border-radius: 0;
+  border: 1px solid #{theme.$border-subtle};
+  border-inline-start-width: 3px;
+}
+.admonition.admonition-note,
+.admonition.alert--secondary {
+  background: #{theme.$layer-01};
+  border-inline-start-color: #{theme.$border-strong};
+  color: #{theme.$text-primary};
+}
+.admonition.admonition-info,
+.admonition.alert--info {
+  background: #edf5ff; // Carbon support-info bg
+  border-inline-start-color: #0043ce; // Carbon support-info
+  color: #{theme.$text-primary};
+}
+.admonition.admonition-tip,
+.admonition.alert--success {
+  background: #defbe6; // Carbon support-success bg
+  border-inline-start-color: #24a148;
+  color: #{theme.$text-primary};
+}
+.admonition.admonition-caution,
+.admonition.admonition-warning,
+.admonition.alert--warning {
+  background: #fcf4d6; // Carbon support-warning bg
+  border-inline-start-color: #f1c21b;
+  color: #{theme.$text-primary};
+}
+.admonition.admonition-danger,
+.admonition.alert--danger {
+  background: #fff1f1; // Carbon support-error bg
+  border-inline-start-color: #da1e28;
+  color: #{theme.$text-primary};
+}
+
+// Tables — Carbon DataTable aesthetic: no rounded corners, subtle borders,
+// header row on layer-accent.
+.theme-doc-markdown table,
+article table {
+  border-radius: 0;
+  border-collapse: collapse;
+  border: 1px solid #{theme.$border-subtle};
+
+  thead tr {
+    background: #{theme.$layer-accent};
+    color: #{theme.$text-primary};
+    border-block-end: 1px solid #{theme.$border-strong};
+  }
+  th,
+  td {
+    border: none;
+    border-block-end: 1px solid #{theme.$border-subtle};
+    padding: $spacing-03 $spacing-05;
+    font-weight: 400;
+  }
+  th {
+    font-weight: 600;
+    text-align: start;
+  }
+  tr:hover td {
+    background: #{theme.$layer-hover};
+  }
+}
+
+// Pagination nav (Next / Previous at article footer) — Carbon tile feel.
+.pagination-nav__link {
+  border-radius: 0;
+  border: 1px solid #{theme.$border-subtle};
+  background: #{theme.$layer-01};
+
+  &:hover {
+    background: #{theme.$layer-hover};
+    border-color: #{theme.$border-strong};
+  }
+}
+.pagination-nav__label {
+  font-weight: 400;
+}
+.pagination-nav__sublabel {
+  color: #{theme.$text-secondary};
+}
