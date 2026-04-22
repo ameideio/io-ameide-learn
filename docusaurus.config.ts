@@ -2,9 +2,9 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-const siteUrl = process.env.AMEIDE_SITE_URL ?? 'https://ameideio.github.io';
+const siteUrl = process.env.AMEIDE_SITE_URL ?? 'https://learn.ameide.io';
 const siteBaseUrl = (() => {
-  const raw = process.env.AMEIDE_BASE_URL ?? '/io-ameide-learn/';
+  const raw = process.env.AMEIDE_BASE_URL ?? '/';
   if (raw === '/') {
     return raw;
   }
@@ -73,7 +73,7 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          href: 'https://ameideio.github.io/io-ameide-developers/',
+          href: 'https://developers.ameide.io',
           label: 'Developers',
           position: 'right',
         },
@@ -99,7 +99,7 @@ const config: Config = {
           items: [
             {
               label: 'Developer portal',
-              href: 'https://ameideio.github.io/io-ameide-developers/',
+              href: 'https://developers.ameide.io',
             },
             {
               label: 'ameide.io',

@@ -6,9 +6,6 @@ on:
       - main
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-
 permissions:
   contents: read
   pages: write
@@ -38,6 +35,9 @@ jobs:
         run: npm ci
 
       - name: Build site
+        env:
+          AMEIDE_SITE_URL: https://ameideio.github.io
+          AMEIDE_BASE_URL: /io-ameide-learn/
         run: npm run build
 
       - name: Upload Pages artifact
@@ -92,7 +92,7 @@ jobs:
 
           echo "page_url=${page_url}" >> "${GITHUB_OUTPUT}"
 
-          for attempt in $(seq 1 60); do
+          for _ in $(seq 1 60); do
             status="$(gh api "repos/${GITHUB_REPOSITORY}/pages/deployments/${deployment_id}" --jq .status)"
             case "${status}" in
               succeed)
