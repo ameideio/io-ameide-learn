@@ -35,6 +35,11 @@ const sidebars: SidebarsConfig = {
       ],
     },
     'tutorials',
+    {
+      type: 'category',
+      label: 'Enterprise Transformation',
+      items: ['enterprise-transformation/objectives'],
+    },
   ],
 };
 
