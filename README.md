@@ -20,8 +20,10 @@ npm run start
 npm run build
 ```
 
-## Deployment
+## Runtime contract
 
-Publishes to GitHub Pages at
-`https://ameideio.github.io/io-ameide-learn/` via the workflow in
-`.github/workflows/`.
+- The production site is built for `https://learn.ameide.io/`.
+- The container image is published to GHCR and is the artifact consumed by
+  GitOps.
+- GitHub Pages remains available as a secondary publish target and must build
+  with the project-path base URL.
