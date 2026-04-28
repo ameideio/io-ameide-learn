@@ -2,6 +2,7 @@
 @use "@carbon/styles/scss/themes" as themes;
 @use "@carbon/styles/scss/type";
 @use "@carbon/styles/scss/spacing" as *;
+@use "@carbon/styles/scss/breakpoint" as breakpoint;
 
 // Self-hosted IBM Plex — matches io-ameide-www's Next Font setup and kills
 // the font flash from CDN loading.
@@ -65,19 +66,16 @@
   --ifm-alert-border-radius: 0;
   --ifm-code-border-radius: 0;
 
-  // Carbon UI Shell: always-dark header (#161616) over g10 body, per
-  // @carbon/react Header defaults. Text flips to text-inverse.
-  --ifm-navbar-background-color: #161616;
-  --ifm-navbar-shadow: inset 0 -1px 0 #393939;
-  --ifm-navbar-link-color: #f4f4f4;
-  --ifm-navbar-link-hover-color: #ffffff;
+  // Carbon UI Shell, IBM-Cloud convention — io-ameide-portal scopes the
+  // masthead to g100 dark regardless of page theme (see Nav.jsx +
+  // nav.scss `.app-shell-header.cds--header { @include theme(themes.$g100); }`).
+  // The actual color values are emitted by the `theme.theme(themes.$g100)`
+  // mixin scoped to `.navbar` below; the `--ifm-*` vars here just point
+  // Infima at Carbon tokens that resolve correctly inside that scope.
   --ifm-navbar-height: 3rem;
 
-  // Footer mirrors the header so the Carbon dark bookends match.
-  --ifm-footer-background-color: #161616;
-  --ifm-footer-color: #f4f4f4;
-  --ifm-footer-link-color: #f4f4f4;
-  --ifm-footer-title-color: #ffffff;
+  // Footer is also g100 (dark) — see `.footer--dark` block below where
+  // the theme mixin scopes Carbon tokens to the dark palette.
 
   --ifm-link-color: #{theme.$link-primary};
   --ifm-link-hover-color: #{theme.$link-primary-hover};
@@ -212,112 +210,159 @@ svg[class*="iconExternalLink"] {
   }
 }
 
-// Infima's .footer--dark preset has higher specificity than :root vars —
-// override it directly so the dark-footer variant actually uses Carbon.
+// Footer mirrors io-ameide-www's SiteFooter: a g100 dark band that lives
+// inside an otherwise light shell. Scope the g100 theme tokens to the
+// footer element only so `theme.$text-secondary` etc. resolve to dark-
+// palette values without leaking into the rest of the page.
 .footer--dark {
-  background: #161616;
-  --ifm-footer-link-color: #f4f4f4;
-  --ifm-footer-title-color: #ffffff;
-  color: #f4f4f4;
+  @include theme.theme(themes.$g100);
+
+  background-color: #{theme.$background};
+  color: #{theme.$text-primary};
+  border-block-start: 1px solid #{theme.$border-subtle-00};
+
+  // Cap inner content at the same 99rem grid the masthead uses so wide
+  // viewports don't stretch link columns to the edges.
+  .container {
+    max-inline-size: 99rem;
+    margin-inline: auto;
+    padding-inline: $spacing-05;
+
+    @include breakpoint.breakpoint("md") {
+      padding-inline: $spacing-07;
+    }
+
+    @include breakpoint.breakpoint("lg") {
+      padding-inline: $spacing-09;
+    }
+  }
 }
 .footer__link-item {
-  color: #f4f4f4;
+  color: #{theme.$text-secondary};
+  text-decoration: none;
 
   &:hover {
-    color: #ffffff;
+    color: #{theme.$text-primary};
     text-decoration: underline;
   }
 }
 .footer__title {
-  color: #ffffff;
+  color: #{theme.$text-primary};
   font-weight: 600;
 }
 .footer__copyright {
-  color: #c6c6c6;
+  color: #{theme.$text-helper};
 }
 
-// Carbon UI Shell: a dark, flat, 3rem-tall header. Items are full-height
-// with a 2px border-bottom accent on hover (done below in .navbar__item).
+// Carbon UI Shell — IBM-Cloud / portal variant, matching io-ameide-portal's
+// `.app-shell-header.cds--header { @include theme(themes.$g100); }`.
+// Scoping the g100 theme mixin to `.navbar` makes every Carbon token
+// inside (background, layer, text, icon, focus) resolve to dark values
+// automatically — no hardcoded hex needed.
 .navbar {
-  border-block-end: 1px solid #393939;
+  @include theme.theme(themes.$g100);
+
+  border-block-end: 1px solid #{theme.$border-subtle};
   box-shadow: none;
   backdrop-filter: none;
   padding: 0;
+  height: var(--ifm-navbar-height);
   min-height: var(--ifm-navbar-height);
-  background: var(--ifm-navbar-background-color);
+  background: #{theme.$background};
+  color: #{theme.$text-primary};
 
-  // Brand anchors to the far-left like Carbon's HeaderName.
+  // Cap inner content at the same 99rem grid the marketing masthead uses
+  // so the navbar doesn't sprawl edge-to-edge on wide viewports. Fill
+  // the navbar's own block-size — Infima leaves `.navbar__inner` at
+  // `auto`, which shrinks to 47px under `box-sizing: border-box` after
+  // the 1px bottom border, throwing children's vertical centering off.
+  .navbar__inner {
+    max-inline-size: 99rem;
+    margin-inline: auto;
+    block-size: 100%;
+  }
+
+  // Infima ships `.navbar__items` at 56px tall (it adds vertical padding
+  // for breathing room inside its default 60px navbar). Our 48px Carbon
+  // shell needs the items to match the navbar exactly so brand, links,
+  // and global actions all center on the same y-axis — no overhang.
+  .navbar__items {
+    padding-block: 0;
+    block-size: 100%;
+  }
+
+  // Brand anchors to the far-left like Carbon's HeaderName, with a
+  // 1rem leading inline padding (portal uses $spacing-05 = 1rem on
+  // `.cds--header__name` after the menu toggle).
   .navbar__brand {
-    padding-inline: 1rem;
+    padding-inline: $spacing-05 $spacing-04;
     margin-inline-end: 0;
     height: var(--ifm-navbar-height);
-    color: var(--ifm-navbar-link-color);
+    color: #{theme.$text-primary};
 
     &:hover {
-      background: #353535; // Carbon background-inverse-hover
-      color: #ffffff;
+      background: #{theme.$background-hover};
+      color: #{theme.$text-primary};
     }
   }
 
-  .navbar__logo {
-    height: 1.5rem;
-    width: 1.5rem;
-    margin-inline-end: 0.75rem;
-    display: flex;
-    align-items: center;
-
-    img {
-      height: 1.5rem;
-      width: 1.5rem;
-      object-fit: contain;
-    }
-  }
-
+  // Wordmark: matches Carbon's `<HeaderName>` — 14px / weight 600 —
+  // since io-ameide-portal renders the brand at the @carbon/react default.
   .navbar__title {
+    font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: 0;
     color: inherit;
   }
 
-  // Main nav items: full-height, no padding-block, hover underline.
+  // Main nav items: full-height, hover with background-hover (g100
+  // dark-shell standard), 3px bottom accent on the active item using
+  // border-interactive (Carbon's nav-active pattern). The accent uses
+  // `box-shadow: inset 0 -3px` rather than a border so it doesn't add
+  // 3px to block-rendered links — Infima's right-side `.navbar__link`
+  // is `display: block`, which would otherwise overflow the 48px
+  // navbar by exactly the border thickness.
   .navbar__items .navbar__link {
-    padding: 0 1rem;
+    padding: 0 $spacing-05;
     line-height: var(--ifm-navbar-height);
-    color: var(--ifm-navbar-link-color);
+    color: #{theme.$text-primary};
+    font-size: 0.875rem;
     font-weight: 400;
-    border-block-end: 2px solid transparent;
 
     &:hover {
-      background: #353535;
-      color: #ffffff;
-      border-block-end-color: #ffffff;
+      background: #{theme.$background-hover};
+      color: #{theme.$text-primary};
     }
   }
   .navbar__link--active {
-    color: #ffffff;
-    border-block-end-color: #ffffff;
+    color: #{theme.$text-primary};
+    box-shadow: inset 0 -3px 0 #{theme.$border-interactive};
   }
 
-  // Right-side links behave like Carbon HeaderGlobalAction icon buttons:
-  // same hover treatment as nav items.
+  // Right-side links behave like Carbon HeaderGlobalAction icon
+  // buttons: full-height flex containers so the optional external-link
+  // glyph centers next to the label without pushing the row off-axis.
   .navbar__items--right .navbar__link {
-    padding: 0 1rem;
-    line-height: var(--ifm-navbar-height);
-    color: var(--ifm-navbar-link-color);
+    display: flex;
+    align-items: center;
+    block-size: 100%;
+    padding: 0 $spacing-05;
+    line-height: 1;
+    color: #{theme.$text-primary};
 
     &:hover {
-      background: #353535;
-      color: #ffffff;
+      background: #{theme.$background-hover};
+      color: #{theme.$text-primary};
     }
   }
 
-  // Toggle button (mobile menu + color-mode) behaves like an icon button:
-  // 3rem square, no radius, Carbon inverse hover. Don't force display —
-  // Docusaurus uses media queries to hide the mobile toggle at desktop.
+  // Toggle button (mobile menu + color-mode): 3rem square, no radius.
+  // Don't force display — Docusaurus media queries hide the mobile
+  // toggle at desktop.
   .navbar__toggle,
   .clean-btn[class*="toggleButton_"],
   [class*="colorModeToggle"] {
-    color: var(--ifm-navbar-link-color);
+    color: #{theme.$text-primary};
     border-radius: 0;
     height: var(--ifm-navbar-height);
     width: var(--ifm-navbar-height);
@@ -326,25 +371,108 @@ svg[class*="iconExternalLink"] {
     justify-content: center;
 
     &:hover {
-      background: #353535;
-      color: #ffffff;
+      background: #{theme.$background-hover};
+      color: #{theme.$text-primary};
     }
   }
 
-  // Search input: swap to Carbon inverse input colors.
+  // Search bar — replicates io-ameide-portal's `header-search` shell:
+  // a full-height inline input with a Carbon Search glyph at the left
+  // and a `focus` outline on focus. The plugin
+  // (@easyops-cn/docusaurus-search-local) renders three nested elements
+  // we need to flatten into Carbon's chrome:
+  //
+  //   div.navbarSearchContainer_*  (outer slot from theme-classic)
+  //     div.navbar__search         (plugin shell, holds input + spinner)
+  //       input.navbar__search-input
+  //
+  // We size the outer container to the full 3rem navbar height, paint
+  // the Search icon as a `::before` mask on the shell, and drop the
+  // pill styling on the input so it reads as one continuous Carbon
+  // input instead of a floating capsule.
+  [class*="navbarSearchContainer"] {
+    display: flex;
+    align-items: center;
+    block-size: 100%;
+    margin-inline-end: $spacing-03;
+    padding: 0;
+    // Plugin appends the search slot as the last child of
+    // `.navbar__items--right`; flex `order` floats it ahead of the
+    // Developers / GitHub / color-mode siblings without touching the
+    // DOM, matching the portal layout where search precedes the
+    // global-action icons.
+    order: -1;
+  }
+
+  .navbar__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    block-size: 100%;
+    inline-size: 16rem;
+
+    // The plugin wraps the input in an inner `<span class="searchBar_*">`
+    // (block, 26px tall) plus a sibling `<pre>` autocomplete ghost —
+    // these block the input from filling the 47px shell, so it
+    // collapses to its 17px text height. Stretch the wrapper to fill
+    // and hide the ghost (the dropdown panel covers result rendering).
+    > span:first-child {
+      display: flex;
+      align-items: center;
+      block-size: 100%;
+      inline-size: 100%;
+      position: relative;
+    }
+
+    > span:first-child > pre {
+      display: none;
+    }
+
+    // Carbon Search glyph painted via CSS mask so it follows
+    // currentColor — same trick the external-link override uses.
+    // `z-index: 1` lifts the pseudo above the input's `field`
+    // background; without it the icon paints first and the input's
+    // opaque bg covers it on the same stacking context.
+    &::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: $spacing-05;
+      z-index: 1;
+      inline-size: 16px;
+      block-size: 16px;
+      background-color: currentColor;
+      mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M29 27.5859 22.4536 21.0395a11.0464 11.0464 0 1 0-1.4141 1.4141L27.5859 29zM4 13a9 9 0 1 1 9 9A9.01 9.01 0 0 1 4 13z'/%3E%3C/svg%3E");
+      -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M29 27.5859 22.4536 21.0395a11.0464 11.0464 0 1 0-1.4141 1.4141L27.5859 29zM4 13a9 9 0 1 1 9 9A9.01 9.01 0 0 1 4 13z'/%3E%3C/svg%3E");
+      mask-size: contain;
+      -webkit-mask-size: contain;
+      mask-repeat: no-repeat;
+      -webkit-mask-repeat: no-repeat;
+      pointer-events: none;
+      color: #{theme.$icon-primary};
+    }
+  }
+
   .navbar__search-input {
-    background: #262626;
-    border: 1px solid transparent;
-    color: #f4f4f4;
+    block-size: 100%;
+    inline-size: 100%;
+    background: #{theme.$field};
+    border: 0;
+    border-block-end: 1px solid #{theme.$border-strong};
+    color: #{theme.$text-primary};
     border-radius: 0;
+    padding-inline: calc(#{$spacing-05} + 1rem + #{$spacing-03}) $spacing-05;
+    font-size: 0.875rem;
 
     &::placeholder {
-      color: #c6c6c6;
+      color: #{theme.$text-placeholder};
+    }
+    &:hover {
+      background: #{theme.$field-hover};
     }
     &:focus {
-      background: #353535;
-      border-color: #ffffff;
-      outline: 2px solid #ffffff;
+      background: #{theme.$field-hover};
+      border-block-end-color: transparent;
+      outline: 2px solid #{theme.$focus};
       outline-offset: -2px;
     }
   }
