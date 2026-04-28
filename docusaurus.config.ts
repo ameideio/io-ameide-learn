@@ -89,7 +89,6 @@ const config: Config = {
           type: 'dropdown',
           label: 'Documentation',
           position: 'left',
-          to: '/docs/documentation/overview',
           items: [
             {label: 'Overview', to: '/docs/documentation/overview'},
             {label: 'Strategy', to: '/docs/documentation/strategy'},
@@ -112,7 +111,6 @@ const config: Config = {
           type: 'dropdown',
           label: 'Training & Certifications',
           position: 'left',
-          to: '/docs/training/overview',
           items: [
             {label: 'Overview', to: '/docs/training/overview'},
             {
@@ -131,7 +129,6 @@ const config: Config = {
           type: 'dropdown',
           label: 'Partners',
           position: 'left',
-          to: '/docs/partners/overview',
           items: [
             {label: 'Overview', to: '/docs/partners/overview'},
             {

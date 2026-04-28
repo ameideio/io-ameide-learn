@@ -4,6 +4,25 @@
 @use "@carbon/styles/scss/spacing" as *;
 @use "@carbon/styles/scss/breakpoint" as breakpoint;
 
+// Carbon icon glyphs as inline SVG data URIs. Painted via `mask-image`
+// + `background-color: currentColor` so the glyph follows link/icon
+// colour through hover and theme switches (same pattern as Carbon's
+// own icon repaint).
+$icon-launch: "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M26 28H6a2.0023 2.0023 0 0 1-2-2V6a2.0023 2.0023 0 0 1 2-2h10v2H6v20h20V16h2v10a2.0023 2.0023 0 0 1-2 2z'/%3E%3Cpath d='M20 2v2h6.586L18 12.586 19.414 14 28 5.414V12h2V2z'/%3E%3C/svg%3E";
+$icon-search: "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M29 27.5859 22.4536 21.0395a11.0464 11.0464 0 1 0-1.4141 1.4141L27.5859 29zM4 13a9 9 0 1 1 9 9A9.01 9.01 0 0 1 4 13z'/%3E%3C/svg%3E";
+
+// Emit both prefixed and unprefixed mask properties. Safari supports
+// unprefixed `mask-image` from 15.4 (2022); the `-webkit-` form keeps
+// older WebKit builds working without a polyfill.
+@mixin carbon-icon-mask($uri) {
+  mask-image: url("#{$uri}");
+  -webkit-mask-image: url("#{$uri}");
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
 // Self-hosted IBM Plex — matches io-ameide-www's Next Font setup and kills
 // the font flash from CDN loading.
 @import "@fontsource/ibm-plex-sans/300.css";
@@ -196,12 +215,7 @@ svg[class*="iconExternalLink"] {
   inline-size: 14px;
   block-size: 14px;
   background-color: currentColor;
-  mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M26 28H6a2.0023 2.0023 0 0 1-2-2V6a2.0023 2.0023 0 0 1 2-2h10v2H6v20h20V16h2v10a2.0023 2.0023 0 0 1-2 2z'/%3E%3Cpath d='M20 2v2h6.586L18 12.586 19.414 14 28 5.414V12h2V2z'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M26 28H6a2.0023 2.0023 0 0 1-2-2V6a2.0023 2.0023 0 0 1 2-2h10v2H6v20h20V16h2v10a2.0023 2.0023 0 0 1-2 2z'/%3E%3Cpath d='M20 2v2h6.586L18 12.586 19.414 14 28 5.414V12h2V2z'/%3E%3C/svg%3E");
-  mask-size: contain;
-  -webkit-mask-size: contain;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
+  @include carbon-icon-mask($icon-launch);
   vertical-align: -2px;
   margin-inline-start: 0.25rem;
 
@@ -378,13 +392,21 @@ svg[class*="iconExternalLink"] {
 
   // Search bar — replicates io-ameide-portal's `header-search` shell:
   // a full-height inline input with a Carbon Search glyph at the left
-  // and a `focus` outline on focus. The plugin
-  // (@easyops-cn/docusaurus-search-local) renders three nested elements
-  // we need to flatten into Carbon's chrome:
+  // and a `focus` outline on focus.
   //
-  //   div.navbarSearchContainer_*  (outer slot from theme-classic)
+  // BRITTLE: the rules below key on plugin- and theme-internal class
+  // names that aren't part of any documented public API. Re-test
+  // (default / hover / focus, search input height = navbar height)
+  // after bumping any of:
+  //   - @docusaurus/theme-classic    (tested at 3.10.0)
+  //   - @easyops-cn/docusaurus-search-local (pinned at 0.55.1)
+  //
+  // Tested DOM nesting (theme-classic 3.10 + plugin 0.55.1):
+  //   div.navbarSearchContainer_*  (theme-classic CSS-module hash)
   //     div.navbar__search         (plugin shell, holds input + spinner)
-  //       input.navbar__search-input
+  //       span.searchBar_*         (plugin wrapper around input)
+  //         input.navbar__search-input
+  //         pre                    (autocomplete ghost — hidden below)
   //
   // We size the outer container to the full 3rem navbar height, paint
   // the Search icon as a `::before` mask on the shell, and drop the
@@ -441,12 +463,7 @@ svg[class*="iconExternalLink"] {
       inline-size: 16px;
       block-size: 16px;
       background-color: currentColor;
-      mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M29 27.5859 22.4536 21.0395a11.0464 11.0464 0 1 0-1.4141 1.4141L27.5859 29zM4 13a9 9 0 1 1 9 9A9.01 9.01 0 0 1 4 13z'/%3E%3C/svg%3E");
-      -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M29 27.5859 22.4536 21.0395a11.0464 11.0464 0 1 0-1.4141 1.4141L27.5859 29zM4 13a9 9 0 1 1 9 9A9.01 9.01 0 0 1 4 13z'/%3E%3C/svg%3E");
-      mask-size: contain;
-      -webkit-mask-size: contain;
-      mask-repeat: no-repeat;
-      -webkit-mask-repeat: no-repeat;
+      @include carbon-icon-mask($icon-search);
       pointer-events: none;
       color: #{theme.$icon-primary};
     }
