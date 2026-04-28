@@ -13,11 +13,12 @@ const siteBaseUrl = (() => {
 
 const config: Config = {
   title: 'Ameide Learn',
-  tagline: 'Walkthroughs, playbooks, and product guides for every Ameide user.',
+  tagline: 'Learn the platform, build your skills, run your practice.',
   favicon: 'img/favicon.svg',
 
   future: {
     v4: true,
+    faster: true,
   },
 
   url: siteUrl,
@@ -52,7 +53,26 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
-  plugins: ['docusaurus-plugin-sass'],
+  plugins: [
+    'docusaurus-plugin-sass',
+    [
+      // Local Lunr-indexed search. Renders a `<SearchBar>` into the
+      // navbar's `{ type: 'search' }` slot — we restyle that markup
+      // below to match io-ameide-portal's `header-search` pattern.
+      require.resolve('@easyops-cn/docusaurus-search-local'),
+      {
+        hashed: true,
+        indexDocs: true,
+        indexBlog: false,
+        indexPages: true,
+        docsRouteBasePath: '/docs',
+        searchResultLimits: 8,
+        searchBarShortcut: true,
+        searchBarShortcutHint: false,
+        searchBarPosition: 'right',
+      },
+    ],
+  ],
 
   themeConfig: {
     colorMode: {
@@ -60,17 +80,69 @@ const config: Config = {
       respectPrefersColorScheme: false,
     },
     navbar: {
-      title: 'Ameide Learn',
-      logo: {
-        alt: 'Ameide Learn',
-        src: 'img/logo.svg',
-      },
+      // Carbon HeaderName-style wordmark, matching io-ameide-portal's
+      // `<HeaderName>ameide Portal</HeaderName>` pattern: lowercase
+      // brand prefix + capitalized product, single string, no logo.
+      title: 'ameide Learn',
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          type: 'dropdown',
+          label: 'Documentation',
           position: 'left',
-          label: 'Docs',
+          to: '/docs/documentation/overview',
+          items: [
+            {label: 'Overview', to: '/docs/documentation/overview'},
+            {label: 'Strategy', to: '/docs/documentation/strategy'},
+            {label: 'Architecture', to: '/docs/documentation/architecture'},
+            {label: 'Delivery', to: '/docs/documentation/delivery'},
+            {label: 'Change', to: '/docs/documentation/change'},
+            {label: 'Support', to: '/docs/documentation/support'},
+            {type: 'html', value: '<hr style="margin: 0.3rem 0;">'},
+            {
+              label: 'Getting started',
+              to: '/docs/getting-started/what-is-ameide',
+            },
+            {
+              label: 'Administration',
+              to: '/docs/administration/identity-and-sso',
+            },
+          ],
+        },
+        {
+          type: 'dropdown',
+          label: 'Training & Certifications',
+          position: 'left',
+          to: '/docs/training/overview',
+          items: [
+            {label: 'Overview', to: '/docs/training/overview'},
+            {
+              label: 'Learning paths',
+              to: '/docs/training/paths/architect',
+            },
+            {label: 'Courses', to: '/docs/training/courses'},
+            {
+              label: 'Certifications',
+              to: '/docs/training/certifications/foundations',
+            },
+            {label: 'Playbooks', to: '/docs/training/playbooks'},
+          ],
+        },
+        {
+          type: 'dropdown',
+          label: 'Partners',
+          position: 'left',
+          to: '/docs/partners/overview',
+          items: [
+            {label: 'Overview', to: '/docs/partners/overview'},
+            {
+              label: 'Consulting Partners',
+              to: '/docs/partners/consulting/overview',
+            },
+            {
+              label: 'Technology Partners',
+              to: '/docs/partners/technology/overview',
+            },
+          ],
         },
         {
           href: 'https://developers.ameide.io',

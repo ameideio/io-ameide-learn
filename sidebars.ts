@@ -1,12 +1,24 @@
 import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 
 const sidebars: SidebarsConfig = {
-  tutorialSidebar: [
+  documentationSidebar: [
     'intro',
     {
       type: 'category',
-      label: 'Getting started',
+      label: 'Documentation',
       collapsed: false,
+      items: [
+        'documentation/overview',
+        'documentation/strategy',
+        'documentation/architecture',
+        'documentation/delivery',
+        'documentation/change',
+        'documentation/support',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Getting started',
       items: [
         'getting-started/what-is-ameide',
         'getting-started/invite-your-team',
@@ -15,30 +27,69 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Products',
-      collapsed: false,
-      items: [
-        'products/identity',
-        'products/support',
-        'products/sales',
-        'products/marketing',
-        'products/threads',
-      ],
-    },
-    {
-      type: 'category',
       label: 'Administration',
       items: [
-        'administration/billing',
+        'administration/identity-and-sso',
         'administration/roles-and-permissions',
+        'administration/billing',
         'administration/audit-log',
+        'administration/threads',
       ],
     },
-    'tutorials',
+  ],
+
+  trainingSidebar: [
+    'training/overview',
     {
       type: 'category',
-      label: 'Enterprise Transformation',
-      items: ['enterprise-transformation/objectives'],
+      label: 'Learning paths',
+      collapsed: false,
+      items: [
+        'training/paths/architect',
+        'training/paths/consultant',
+        'training/paths/project-manager',
+        'training/paths/administrator',
+      ],
+    },
+    'training/courses',
+    {
+      type: 'category',
+      label: 'Certifications',
+      items: [
+        'training/certifications/foundations',
+        'training/certifications/architect',
+        'training/certifications/consultant',
+      ],
+    },
+    'training/playbooks',
+  ],
+
+  partnersSidebar: [
+    'partners/overview',
+    {
+      type: 'category',
+      label: 'Consulting Partners',
+      collapsed: false,
+      items: [
+        'partners/consulting/overview',
+        'partners/consulting/sell',
+        'partners/consulting/deliver',
+        'partners/consulting/service',
+        'partners/consulting/people',
+        'partners/consulting/admin',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Technology Partners',
+      collapsed: false,
+      items: [
+        'partners/technology/overview',
+        'partners/technology/build',
+        'partners/technology/list',
+        'partners/technology/certify',
+        'partners/technology/co-sell',
+      ],
     },
   ],
 };
